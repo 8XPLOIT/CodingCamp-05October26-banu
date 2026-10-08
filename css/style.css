@@ -1,0 +1,566 @@
+/*
+ * style.css — Personal Dashboard Styles
+ * Handles theming (light/dark via CSS custom properties),
+ * layout (CSS Grid + Flexbox), component styles, and transitions.
+ * No external dependencies.
+ */
+
+/* ============================================================
+   1. CSS CUSTOM PROPERTIES — Light Mode (default)
+   ============================================================ */
+:root {
+  --bg:           #f0f2f5;
+  --surface:      #ffffff;
+  --text:         #1a1a2e;
+  --text-muted:   #6b7280;
+  --primary:      #4f46e5;
+  --primary-hover:#4338ca;
+  --danger:       #ef4444;
+  --danger-hover: #dc2626;
+  --success:      #10b981;
+  --border:       #e5e7eb;
+  --shadow:       0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.14);
+  --radius:       12px;
+  --radius-sm:    8px;
+  --transition:   0.3s ease;
+  --font:         -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ============================================================
+   2. CSS CUSTOM PROPERTIES — Dark Mode
+   ============================================================ */
+[data-theme="dark"] {
+  --bg:           #0f0f1a;
+  --surface:      #1e1e2e;
+  --text:         #e2e8f0;
+  --text-muted:   #94a3b8;
+  --primary:      #818cf8;
+  --primary-hover:#6366f1;
+  --danger:       #f87171;
+  --danger-hover: #ef4444;
+  --success:      #34d399;
+  --border:       #2d2d44;
+  --shadow:       0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================================
+   3. RESET & BASE
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* smooth theme transition on the whole page */
+  transition: background-color var(--transition), color var(--transition);
+}
+
+body {
+  font-family: var(--font);
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: 0 0 2rem;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+/* ============================================================
+   4. SITE HEADER
+   ============================================================ */
+.site-header {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 1.25rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.greeting-block h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.time-display {
+  font-size: 2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+  line-height: 1.1;
+}
+
+.date-display {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+/* ============================================================
+   5. THEME TOGGLE BUTTON
+   ============================================================ */
+.btn-icon {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition), box-shadow var(--transition), transform 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-icon:hover {
+  background-color: var(--border);
+  box-shadow: var(--shadow-hover);
+  transform: scale(1.1);
+}
+
+.btn-icon:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   6. MAIN GRID LAYOUT
+   ============================================================ */
+.dashboard-grid {
+  max-width: 1100px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+
+/* ============================================================
+   7. CARD COMPONENT
+   ============================================================ */
+.card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  transition: background-color var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 2px solid var(--primary);
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   8. BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition), opacity var(--transition), transform 0.15s;
+  white-space: nowrap;
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--border);
+  color: var(--text);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--text-muted);
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: var(--danger);
+  color: #fff;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   9. INPUTS
+   ============================================================ */
+.text-input,
+.select-input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  transition: border-color var(--transition), background-color var(--transition);
+}
+
+.text-input::placeholder {
+  color: var(--text-muted);
+}
+
+.text-input:focus,
+.select-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.input-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.input-row .text-input {
+  flex: 1 1 120px;
+}
+
+/* ============================================================
+   10. ERROR & NOTIFICATION MESSAGES
+   ============================================================ */
+.error-msg {
+  font-size: 0.82rem;
+  color: var(--danger);
+  margin-bottom: 0.5rem;
+  min-height: 1.2em;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ============================================================
+   11. FOCUS TIMER
+   ============================================================ */
+#timer-section {
+  text-align: center;
+}
+
+.timer-display {
+  font-size: 4rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: var(--primary);
+  margin: 0.5rem 0 1rem;
+  line-height: 1;
+  transition: color var(--transition);
+}
+
+/* Flash the timer red when it reaches zero */
+.timer-display.finished {
+  color: var(--danger);
+  animation: pulse 0.8s ease-in-out 3;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.timer-controls {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* In-page banner shown when timer ends */
+.timer-banner {
+  background-color: var(--success);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  transition: opacity 0.4s;
+}
+
+/* ============================================================
+   12. TO-DO LIST
+   ============================================================ */
+.sort-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.sort-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 2px; /* space for scrollbar */
+}
+
+/* Scrollbar styling (Webkit) */
+.task-list::-webkit-scrollbar {
+  width: 5px;
+}
+.task-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.task-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  transition: background-color var(--transition), border-color var(--transition), box-shadow 0.15s;
+}
+
+.task-item:hover {
+  box-shadow: var(--shadow);
+}
+
+/* Checkbox */
+.task-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Task text span */
+.task-text {
+  flex: 1;
+  font-size: 0.9rem;
+  color: var(--text);
+  word-break: break-word;
+  transition: color var(--transition);
+}
+
+.task-text.done {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+/* Inline edit input replacing the span */
+.task-edit-input {
+  flex: 1;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  background-color: var(--surface);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.9rem;
+}
+
+.task-edit-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+/* Task action buttons */
+.task-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.15rem 0.25rem;
+  border-radius: 4px;
+  color: var(--text-muted);
+  transition: color 0.2s, background-color 0.2s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.task-btn:hover {
+  color: var(--text);
+  background-color: var(--border);
+}
+
+.task-btn.delete:hover {
+  color: var(--danger);
+  background-color: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+.task-btn:focus-visible {
+  outline: 2px solid var(--primary);
+}
+
+/* ============================================================
+   13. QUICK LINKS
+   ============================================================ */
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.link-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.9rem 0.6rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  text-align: center;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s, background-color var(--transition);
+  cursor: default;
+}
+
+.link-card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+/* The anchor inside the card */
+.link-anchor {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+.link-anchor:hover {
+  text-decoration: underline;
+}
+
+.link-anchor:focus-visible {
+  outline: 2px solid var(--primary);
+  border-radius: 2px;
+}
+
+/* Delete button on each link card — top-right corner */
+.link-delete-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.link-delete-btn:hover {
+  color: var(--danger);
+  background-color: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+.link-delete-btn:focus-visible {
+  outline: 2px solid var(--primary);
+}
+
+/* ============================================================
+   14. RESPONSIVE — Mobile
+   ============================================================ */
+@media (max-width: 767px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .time-display {
+    font-size: 1.5rem;
+  }
+
+  .timer-display {
+    font-size: 3rem;
+  }
+
+  .input-row {
+    flex-direction: column;
+  }
+
+  .input-row .text-input {
+    flex: 1 1 auto;
+  }
+}
