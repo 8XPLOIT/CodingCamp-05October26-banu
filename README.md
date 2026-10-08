@@ -45,6 +45,11 @@ A personal productivity dashboard that runs entirely in the browser — no serve
 - Preference saved to **LocalStorage** — survives page refresh
 - Implemented with CSS custom properties — instant, flicker-free switch
 
+### 🌐 Language Switch
+- Switch between **English (EN)** and **Bahasa Indonesia (ID)** using the pill-style toggle below the theme button
+- All visible text updates instantly — greetings, section titles, button labels, placeholders, error messages, and the date format
+- Selected language saved to **LocalStorage** — your preference is remembered across sessions
+
 ---
 
 ## 📁 Project Structure
@@ -97,6 +102,7 @@ All data is stored in your browser's **LocalStorage** under these keys:
 | `tasks` | Array of task objects `{ id, text, done, createdAt }` |
 | `links` | Array of link objects `{ id, name, url }` |
 | `theme` | `"light"` or `"dark"` |
+| `lang`  | `"en"` or `"id"` |
 
 Data persists across page refreshes and browser restarts. To clear all data, open DevTools → Application → Local Storage → Clear.
 
