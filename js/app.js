@@ -26,10 +26,103 @@
     tasks: 'tasks',
     links: 'links',
     theme: 'theme',
+    lang:  'lang',
   };
 
   // Timer constants (seconds)
   const TIMER_DURATION = 25 * 60; // 25 minutes
+
+  /* ============================================================
+     TRANSLATIONS
+     ============================================================ */
+
+  const TRANSLATIONS = {
+    en: {
+      // Greeting
+      greetingMorning:   'Good Morning',
+      greetingAfternoon: 'Good Afternoon',
+      greetingEvening:   'Good Evening',
+      greetingNight:     'Good Night',
+      // Timer
+      timerTitle:  'Focus Timer',
+      timerStart:  '▶ Start',
+      timerStop:   '⏸ Stop',
+      timerReset:  '↺ Reset',
+      timerDone:   "⏰ Time's up! Take a break.",
+      // Tasks
+      tasksTitle:         'Tasks',
+      taskPlaceholder:    'Add a new task…',
+      addBtn:             'Add',
+      sortLabel:          'Sort:',
+      sortNewest:         'Newest First',
+      sortName:           'Name (A–Z)',
+      sortStatus:         'Status (Incomplete First)',
+      taskEmpty:          'No tasks yet. Add one above!',
+      taskErrEmpty:       'Task cannot be empty.',
+      taskErrDuplicate:   (t) => `"${t}" is already in your list.`,
+      taskErrEditDup:     (t) => `"${t}" already exists.`,
+      taskAriaComplete:   (t) => `Mark "${t}" as complete`,
+      taskAriaIncomplete: (t) => `Mark "${t}" as incomplete`,
+      taskAriaEdit:       (t) => `Edit task: ${t}`,
+      taskAriaDelete:     (t) => `Delete task: ${t}`,
+      // Links
+      linksTitle:          'Quick Links',
+      linkNamePlaceholder: 'Link name…',
+      linkUrlPlaceholder:  'URL',
+      linksEmpty:          'No links saved yet. Add one above!',
+      linkErrName:         'Link name cannot be empty.',
+      linkErrUrl:          'Please enter a valid URL (e.g. https://example.com).',
+      linkAriaDelete:      (n) => `Delete link: ${n}`,
+      // Theme
+      ariaLightMode: 'Switch to light mode',
+      ariaDarkMode:  'Switch to dark mode',
+      // Date locale
+      dateLocale: 'en-US',
+    },
+
+    id: {
+      // Greeting
+      greetingMorning:   'Selamat Pagi',
+      greetingAfternoon: 'Selamat Siang',
+      greetingEvening:   'Selamat Sore',
+      greetingNight:     'Selamat Malam',
+      // Timer
+      timerTitle:  'Timer Fokus',
+      timerStart:  '▶ Mulai',
+      timerStop:   '⏸ Berhenti',
+      timerReset:  '↺ Reset',
+      timerDone:   '⏰ Waktu habis! Istirahat dulu.',
+      // Tasks
+      tasksTitle:         'Tugas',
+      taskPlaceholder:    'Tambah tugas baru…',
+      addBtn:             'Tambah',
+      sortLabel:          'Urut:',
+      sortNewest:         'Terbaru',
+      sortName:           'Nama (A–Z)',
+      sortStatus:         'Status (Belum Selesai Dulu)',
+      taskEmpty:          'Belum ada tugas. Tambahkan di atas!',
+      taskErrEmpty:       'Tugas tidak boleh kosong.',
+      taskErrDuplicate:   (t) => `"${t}" sudah ada di daftar.`,
+      taskErrEditDup:     (t) => `"${t}" sudah ada.`,
+      taskAriaComplete:   (t) => `Tandai "${t}" sebagai selesai`,
+      taskAriaIncomplete: (t) => `Tandai "${t}" sebagai belum selesai`,
+      taskAriaEdit:       (t) => `Ubah tugas: ${t}`,
+      taskAriaDelete:     (t) => `Hapus tugas: ${t}`,
+      // Links
+      linksTitle:          'Tautan Cepat',
+      linkNamePlaceholder: 'Nama tautan…',
+      linkUrlPlaceholder:  'URL',
+      linksEmpty:          'Belum ada tautan. Tambahkan di atas!',
+      linkErrName:         'Nama tautan tidak boleh kosong.',
+      linkErrUrl:          'Masukkan URL yang valid (mis. https://contoh.com).',
+      linkAriaDelete:      (n) => `Hapus tautan: ${n}`,
+      // Theme
+      ariaLightMode: 'Ganti ke mode terang',
+      ariaDarkMode:  'Ganti ke mode gelap',
+      // Date locale
+      dateLocale: 'id-ID',
+    },
+  };
 
   /* ============================================================
      UTILITIES
@@ -92,7 +185,73 @@
   };
 
   /* ============================================================
-     1. THEME (Light / Dark)
+     1. LANGUAGE (i18n)
+     ============================================================ */
+
+  const langEnBtn = document.getElementById('lang-en');
+  const langIdBtn = document.getElementById('lang-id');
+
+  /** Currently active locale — initialised from storage below */
+  let currentLang = loadStorage(STORAGE_KEYS.lang, 'en');
+
+  /** Shorthand: get a translation string for the current language */
+  const t = (key) => TRANSLATIONS[currentLang][key];
+
+  /**
+   * Apply all static translations to the DOM (data-i18n and
+   * data-i18n-placeholder attributes), then re-render dynamic sections.
+   */
+  const applyTranslations = () => {
+    // Update <html lang=""> attribute
+    document.documentElement.lang = currentLang;
+
+    // Static textContent targets
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      const key = el.dataset.i18n;
+      const val = TRANSLATIONS[currentLang][key];
+      if (val !== undefined && typeof val === 'string') {
+        el.textContent = val;
+      }
+    });
+
+    // Placeholder targets
+    document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+      const key = el.dataset.i18nPlaceholder;
+      const val = TRANSLATIONS[currentLang][key];
+      if (val !== undefined) {
+        el.placeholder = val;
+      }
+    });
+
+    // Re-render dynamic content that contains translated strings
+    // (guard with typeof check since functions may not be defined yet
+    //  on the very first call; subsequent calls will always hit them)
+    if (typeof renderTasks === 'function') renderTasks();
+    if (typeof renderLinks === 'function') renderLinks();
+
+    // Re-render the greeting (it's driven by the current hour + locale)
+    if (typeof updateClock === 'function') updateClock();
+  };
+
+  /** Switch the active language, persist it, and refresh the page strings */
+  const setLang = (lang) => {
+    currentLang = lang;
+    saveStorage(STORAGE_KEYS.lang, lang);
+
+    // Update button active states
+    langEnBtn.classList.toggle('active', lang === 'en');
+    langIdBtn.classList.toggle('active', lang === 'id');
+    langEnBtn.setAttribute('aria-pressed', String(lang === 'en'));
+    langIdBtn.setAttribute('aria-pressed', String(lang === 'id'));
+
+    applyTranslations();
+  };
+
+  langEnBtn.addEventListener('click', () => setLang('en'));
+  langIdBtn.addEventListener('click', () => setLang('id'));
+
+  /* ============================================================
+     2. THEME (Light / Dark)
      ============================================================ */
 
   const themeToggleBtn = document.getElementById('theme-toggle');
@@ -102,11 +261,10 @@
   /** Apply the given theme ('light' or 'dark') to the page */
   const applyTheme = (theme) => {
     htmlEl.setAttribute('data-theme', theme);
-    // Sun means "switch to light"; Moon means "switch to dark"
     themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
     themeToggleBtn.setAttribute(
       'aria-label',
-      theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+      theme === 'dark' ? t('ariaLightMode') : t('ariaDarkMode')
     );
   };
 
@@ -125,7 +283,7 @@
   themeToggleBtn.addEventListener('click', toggleTheme);
 
   /* ============================================================
-     2. CLOCK & GREETING
+     3. CLOCK & GREETING
      ============================================================ */
 
   const greetingEl    = document.getElementById('greeting');
@@ -134,10 +292,10 @@
 
   /** Return a time-based greeting string based on the current hour */
   const getGreeting = (hour) => {
-    if (hour >= 5  && hour < 12) return 'Good Morning';
-    if (hour >= 12 && hour < 18) return 'Good Afternoon';
-    if (hour >= 18 && hour < 21) return 'Good Evening';
-    return 'Good Night';
+    if (hour >= 5  && hour < 12) return t('greetingMorning');
+    if (hour >= 12 && hour < 18) return t('greetingAfternoon');
+    if (hour >= 18 && hour < 21) return t('greetingEvening');
+    return t('greetingNight');
   };
 
   /** Format a Date as HH:MM:SS (24-hour, zero-padded) */
@@ -146,9 +304,9 @@
     return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   };
 
-  /** Format a Date as "Weekday, Month Day, Year" */
+  /** Format a Date using the active locale */
   const formatDate = (date) =>
-    date.toLocaleDateString('en-US', {
+    date.toLocaleDateString(t('dateLocale'), {
       weekday: 'long',
       year:    'numeric',
       month:   'long',
@@ -168,7 +326,7 @@
   setInterval(updateClock, 1000);
 
   /* ============================================================
-     3. FOCUS TIMER
+     4. FOCUS TIMER
      ============================================================ */
 
   const timerDisplayEl = document.getElementById('timer-display');
@@ -211,6 +369,7 @@
 
       // Visual cue: flash the display + show banner
       timerDisplayEl.classList.add('finished');
+      timerBannerEl.textContent = t('timerDone');
       timerBannerEl.classList.remove('hidden');
 
       // Auto-hide banner after 6 seconds
@@ -263,7 +422,7 @@
   updateTimerButtons();
 
   /* ============================================================
-     4. TO-DO LIST
+     5. TASKS
      ============================================================ */
 
   const taskInput   = document.getElementById('task-input');
@@ -312,7 +471,7 @@
       const empty = document.createElement('li');
       empty.className = 'task-item';
       const msg = document.createElement('span');
-      msg.textContent = 'No tasks yet. Add one above!';
+      msg.textContent = t('taskEmpty');
       msg.style.color = 'var(--text-muted)';
       msg.style.fontSize = '0.875rem';
       empty.appendChild(msg);
@@ -330,7 +489,9 @@
       checkbox.type = 'checkbox';
       checkbox.className = 'task-checkbox';
       checkbox.checked = task.done;
-      checkbox.setAttribute('aria-label', `Mark "${task.text}" as ${task.done ? 'incomplete' : 'complete'}`);
+      checkbox.setAttribute('aria-label',
+        task.done ? t('taskAriaIncomplete')(task.text) : t('taskAriaComplete')(task.text)
+      );
       checkbox.addEventListener('change', () => toggleTask(task.id));
 
       // --- Text span ---
@@ -342,14 +503,14 @@
       const editBtn = document.createElement('button');
       editBtn.className = 'task-btn edit';
       editBtn.textContent = '✏️';
-      editBtn.setAttribute('aria-label', `Edit task: ${task.text}`);
+      editBtn.setAttribute('aria-label', t('taskAriaEdit')(task.text));
       editBtn.addEventListener('click', () => startEditTask(task.id, li, textSpan));
 
       // --- Delete button ---
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'task-btn delete';
       deleteBtn.textContent = '🗑️';
-      deleteBtn.setAttribute('aria-label', `Delete task: ${task.text}`);
+      deleteBtn.setAttribute('aria-label', t('taskAriaDelete')(task.text));
       deleteBtn.addEventListener('click', () => deleteTask(task.id));
 
       li.appendChild(checkbox);
@@ -402,7 +563,7 @@
       );
 
       if (isDuplicate) {
-        showError(taskErrorEl, `"${newText}" already exists.`);
+        showError(taskErrorEl, t('taskErrEditDup')(newText));
         input.focus();
         return;
       }
@@ -457,18 +618,18 @@
     const text = taskInput.value.trim();
 
     if (!text) {
-      showError(taskErrorEl, 'Task cannot be empty.');
+      showError(taskErrorEl, t('taskErrEmpty'));
       taskInput.focus();
       return;
     }
 
     // Case-insensitive duplicate check
     const isDuplicate = tasks.some(
-      (t) => t.text.toLowerCase() === text.toLowerCase()
+      (t2) => t2.text.toLowerCase() === text.toLowerCase()
     );
 
     if (isDuplicate) {
-      showError(taskErrorEl, `"${text}" is already in your list.`);
+      showError(taskErrorEl, t('taskErrDuplicate')(text));
       taskInput.focus();
       return;
     }
@@ -501,7 +662,7 @@
   renderTasks();
 
   /* ============================================================
-     5. QUICK LINKS
+     6. QUICK LINKS
      ============================================================ */
 
   const linkNameInput = document.getElementById('link-name-input');
@@ -525,7 +686,7 @@
 
     if (links.length === 0) {
       const msg = document.createElement('p');
-      msg.textContent = 'No links saved yet. Add one above!';
+      msg.textContent = t('linksEmpty');
       msg.style.color = 'var(--text-muted)';
       msg.style.fontSize = '0.875rem';
       linksGrid.appendChild(msg);
@@ -541,7 +702,7 @@
       const delBtn = document.createElement('button');
       delBtn.className = 'link-delete-btn';
       delBtn.textContent = '✕';
-      delBtn.setAttribute('aria-label', `Delete link: ${link.name}`);
+      delBtn.setAttribute('aria-label', t('linkAriaDelete')(link.name));
       delBtn.addEventListener('click', () => deleteLink(link.id));
 
       // Anchor — href set via property, not attribute string, to prevent injection
@@ -571,7 +732,7 @@
     const rawUrl = linkUrlInput.value.trim();
 
     if (!name) {
-      showError(linkErrorEl, 'Link name cannot be empty.');
+      showError(linkErrorEl, t('linkErrName'));
       linkNameInput.focus();
       return;
     }
@@ -579,7 +740,7 @@
     const url = normaliseUrl(rawUrl);
 
     if (!url) {
-      showError(linkErrorEl, 'Please enter a valid URL (e.g. https://example.com).');
+      showError(linkErrorEl, t('linkErrUrl'));
       linkUrlInput.focus();
       return;
     }
@@ -608,6 +769,12 @@
   renderLinks();
 
   /* ============================================================
-     END OF IIFE
+     INITIALISE LANGUAGE
+     Must run after all render functions are defined above.
+     ============================================================ */
+  setLang(currentLang);
+
+  /* ============================================================
+     END OF IIFE - CodingCamp — 05 October 2026
      ============================================================ */
 })();

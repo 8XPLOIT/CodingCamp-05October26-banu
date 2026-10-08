@@ -24,9 +24,18 @@
         <p id="current-time" class="time-display">00:00:00</p>
         <p id="current-date" class="date-display">Monday, January 1, 2024</p>
       </div>
-      <button id="theme-toggle" class="btn-icon" aria-label="Toggle dark mode" title="Toggle light/dark mode">
-        <span id="theme-icon">🌙</span>
-      </button>
+      <!-- Controls: theme toggle + language switch stacked -->
+      <div class="header-controls">
+        <button id="theme-toggle" class="btn-icon" aria-label="Toggle dark mode" title="Toggle light/dark mode">
+          <span id="theme-icon">🌙</span>
+        </button>
+
+        <!-- Language switch -->
+        <div class="lang-switch" role="group" aria-label="Language selector">
+          <button id="lang-en" class="lang-btn active" aria-pressed="true"  data-lang="en">EN</button>
+          <button id="lang-id" class="lang-btn"        aria-pressed="false" data-lang="id">ID</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -34,21 +43,21 @@
 
     <!-- ===== FOCUS TIMER SECTION ===== -->
     <section class="card" id="timer-section" aria-labelledby="timer-heading">
-      <h2 id="timer-heading">Focus Timer</h2>
+      <h2 id="timer-heading" data-i18n="timerTitle">Focus Timer</h2>
       <div class="timer-display" id="timer-display" aria-live="polite" aria-atomic="true">25:00</div>
-      <div id="timer-banner" class="timer-banner hidden" role="alert" aria-live="assertive">
+      <div id="timer-banner" class="timer-banner hidden" role="alert" aria-live="assertive" data-i18n="timerDone">
         ⏰ Time's up! Take a break.
       </div>
       <div class="timer-controls">
-        <button id="timer-start" class="btn btn-primary">▶ Start</button>
-        <button id="timer-stop"  class="btn btn-secondary" disabled>⏸ Stop</button>
-        <button id="timer-reset" class="btn btn-secondary">↺ Reset</button>
+        <button id="timer-start" class="btn btn-primary"  data-i18n="timerStart">▶ Start</button>
+        <button id="timer-stop"  class="btn btn-secondary" disabled data-i18n="timerStop">⏸ Stop</button>
+        <button id="timer-reset" class="btn btn-secondary" data-i18n="timerReset">↺ Reset</button>
       </div>
     </section>
 
     <!-- ===== TO-DO LIST SECTION ===== -->
     <section class="card" id="todo-section" aria-labelledby="todo-heading">
-      <h2 id="todo-heading">Tasks</h2>
+      <h2 id="todo-heading" data-i18n="tasksTitle">Tasks</h2>
 
       <!-- Add task row -->
       <div class="input-row">
@@ -57,20 +66,21 @@
           id="task-input"
           class="text-input"
           placeholder="Add a new task…"
+          data-i18n-placeholder="taskPlaceholder"
           aria-label="New task text"
           maxlength="200"
         />
-        <button id="task-add" class="btn btn-primary">Add</button>
+        <button id="task-add" class="btn btn-primary" data-i18n="addBtn">Add</button>
       </div>
       <p id="task-error" class="error-msg hidden" role="alert" aria-live="polite"></p>
 
       <!-- Sort controls -->
       <div class="sort-row">
-        <label for="task-sort" class="sort-label">Sort:</label>
+        <label for="task-sort" class="sort-label" data-i18n="sortLabel">Sort:</label>
         <select id="task-sort" class="select-input" aria-label="Sort tasks">
-          <option value="date-desc">Newest First</option>
-          <option value="name-asc">Name (A–Z)</option>
-          <option value="status">Status (Incomplete First)</option>
+          <option value="date-desc" data-i18n="sortNewest">Newest First</option>
+          <option value="name-asc"  data-i18n="sortName">Name (A–Z)</option>
+          <option value="status"    data-i18n="sortStatus">Status (Incomplete First)</option>
         </select>
       </div>
 
@@ -80,7 +90,7 @@
 
     <!-- ===== QUICK LINKS SECTION ===== -->
     <section class="card" id="links-section" aria-labelledby="links-heading">
-      <h2 id="links-heading">Quick Links</h2>
+      <h2 id="links-heading" data-i18n="linksTitle">Quick Links</h2>
 
       <!-- Add link row -->
       <div class="input-row">
@@ -89,6 +99,7 @@
           id="link-name-input"
           class="text-input"
           placeholder="Link name…"
+          data-i18n-placeholder="linkNamePlaceholder"
           aria-label="Link name"
           maxlength="100"
         />
@@ -97,10 +108,11 @@
           id="link-url-input"
           class="text-input"
           placeholder="URL"
+          data-i18n-placeholder="linkUrlPlaceholder"
           aria-label="Link URL"
           maxlength="2000"
         />
-        <button id="link-add" class="btn btn-primary">Add</button>
+        <button id="link-add" class="btn btn-primary" data-i18n="addBtn">Add</button>
       </div>
       <p id="link-error" class="error-msg hidden" role="alert" aria-live="polite"></p>
 
