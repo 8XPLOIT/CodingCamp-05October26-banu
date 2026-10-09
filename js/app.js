@@ -354,7 +354,7 @@
     const label = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     timerDisplayEl.textContent = label;
     // Also update the document title for background-tab awareness
-    document.title = timerRunning ? `(${label}) Dashboard` : 'Personal Dashboard';
+    document.title = timerRunning ? `(${label}) Dashboard` : 'To-Do List Life Dashboard';
   };
 
   /** Update Start/Stop button disabled states */

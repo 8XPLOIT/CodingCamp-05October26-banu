@@ -67,13 +67,6 @@ A personal productivity dashboard that runs entirely in the browser — no serve
 - Selected language saved to **LocalStorage** — remembered across sessions
 - Please note: We are providing this option purely as an optional feature to accommodate language preferences, and it may revert to being English-only (without a language toggle).
 
-### 🎨 Icons
-- All UI icons are **inline SVG** — monochrome, scalable, zero external requests
-- Theme toggle: moon / sun SVG
-- Task edit: pencil SVG — highlights in primary colour on hover
-- Task delete: trash SVG — highlights in red on hover
-- Link delete: × SVG — highlights in red on hover
-
 ---
 
 ## 📁 Project Structure
@@ -163,7 +156,8 @@ Data persists across page refreshes and browser restarts. To clear all data, ope
 
 | Browser | Support |
 |---|---|
-| Chrome / Edge | ✅ |
+| Edge | ✅ |
+| Chrome | ✅ |
 | Firefox | ✅ |
 | Safari | ✅ |
 
@@ -175,7 +169,6 @@ Requires a browser with support for CSS custom properties, `localStorage`, and t
 
 - [x] Light / Dark mode toggle
 - [x] Language switch (EN / ID)
-- [x] Inline SVG icons — no emoji, no icon library
 - [x] Responsive task controls (sort beside Add on mobile)
 - [ ] Custom timer duration
 - [ ] Sound notification when timer ends
