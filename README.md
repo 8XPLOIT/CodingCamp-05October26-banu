@@ -1,4 +1,4 @@
-# 🗂️ To-Do Life Dashboard
+# 🗂️ To-Do List Life Dashboard
 
 A personal productivity dashboard that runs entirely in the browser — no server, no frameworks, no setup required. Just open `index.html` and start using it.
 
