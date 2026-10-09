@@ -93,14 +93,14 @@ body {
 }
 
 .greeting-block h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0em;
+  color: var(--text-muted);
 }
 
 .time-display {
-  font-size: 2rem;
+  font-size: 2.75rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
@@ -140,6 +140,7 @@ body {
   justify-content: center;
   transition: background-color var(--transition), box-shadow var(--transition), transform 0.2s;
   flex-shrink: 0;
+  color: var(--text);
 }
 
 .btn-icon:hover {
@@ -151,6 +152,16 @@ body {
 .btn-icon:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 2px;
+}
+
+/* SVG icons inside the theme toggle */
+.theme-svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex-shrink: 0;
+  stroke: currentColor;
+  pointer-events: none;
 }
 
 /* ============================================================
@@ -402,17 +413,53 @@ body {
 /* ============================================================
    12. TO-DO LIST
    ============================================================ */
-.sort-row {
+
+/*
+ * .task-controls — wrapper di atas task list
+ *
+ * Desktop (≥ 768px): dua baris vertikal
+ *   Baris 1: [text-input ─────────] [Add]
+ *   Baris 2: Sort: [select ───────]
+ *
+ * Mobile (< 768px): satu baris horizontal
+ *   [text-input ──] [Add] [Sort: select]
+ */
+.task-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Desktop: input + Add tombol melebar penuh */
+.task-input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.task-input-row .text-input {
+  flex: 1 1 0;
+  min-width: 0; /* cegah overflow */
+}
+
+/* Desktop: sort row di bawah, label + select sejajar */
+.task-sort-row {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.75rem;
+}
+
+.task-sort-row .select-input {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .sort-label {
   font-size: 0.85rem;
   color: var(--text-muted);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .task-list {
@@ -497,18 +544,35 @@ body {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
-  padding: 0.15rem 0.25rem;
-  border-radius: 4px;
+  padding: 0.3rem;
+  border-radius: 6px;
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: color 0.2s, background-color 0.2s;
-  line-height: 1;
   flex-shrink: 0;
+  line-height: 1;
+}
+
+/* SVG icons inside task buttons */
+.task-btn svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  pointer-events: none;
 }
 
 .task-btn:hover {
   color: var(--text);
   background-color: var(--border);
+}
+
+.task-btn.edit:hover {
+  color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
 .task-btn.delete:hover {
@@ -518,6 +582,7 @@ body {
 
 .task-btn:focus-visible {
   outline: 2px solid var(--primary);
+  outline-offset: 1px;
 }
 
 /* ============================================================
@@ -579,12 +644,23 @@ body {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  padding: 2px 4px;
+  padding: 3px;
   border-radius: 4px;
-  line-height: 1;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: color 0.2s, background-color 0.2s;
+  line-height: 1;
+}
+
+.link-delete-btn svg {
+  width: 12px;
+  height: 12px;
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  pointer-events: none;
 }
 
 .link-delete-btn:hover {
@@ -605,18 +681,65 @@ body {
   }
 
   .time-display {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
   .timer-display {
     font-size: 3rem;
   }
 
+  /*
+   * Quick Links input row masih boleh wrap ke column di mobile
+   * karena punya dua text-input + satu button (lebih padat)
+   */
   .input-row {
     flex-direction: column;
   }
 
   .input-row .text-input {
     flex: 1 1 auto;
+  }
+
+  /*
+   * Tasks — mobile layout: semua dalam SATU baris horizontal
+   * [text-input ──────] [Add] | [Sort: select]
+   *
+   * .task-controls: ganti arah jadi row, biarkan wrap jika perlu
+   * tapi prioritas: semua muat dalam satu baris di layar ≥ 360px
+   */
+  .task-controls {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  /* Input + Add mengambil ruang sebanyak mungkin */
+  .task-input-row {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .task-input-row .text-input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  /* Sort row kompak di sebelah kanan — tidak shrink terlalu kecil */
+  .task-sort-row {
+    flex: 0 0 auto;
+    gap: 0.3rem;
+  }
+
+  /* Label "Sort:" disembunyikan di mobile — icon/select cukup jelas */
+  .task-sort-row .sort-label {
+    display: none;
+  }
+
+  /* Select sort diberi lebar tetap agar tidak terlalu sempit */
+  .task-sort-row .select-input {
+    width: 7.5rem;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.4rem;
   }
 }

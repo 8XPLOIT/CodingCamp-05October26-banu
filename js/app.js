@@ -99,7 +99,7 @@
       sortLabel:          'Urut:',
       sortNewest:         'Terbaru',
       sortName:           'Nama (A–Z)',
-      sortStatus:         'Status (Belum Selesai Dulu)',
+      sortStatus:         'Status (Belum Selesai)',
       taskEmpty:          'Belum ada tugas. Tambahkan di atas!',
       taskErrEmpty:       'Tugas tidak boleh kosong.',
       taskErrDuplicate:   (t) => `"${t}" sudah ada di daftar.`,
@@ -255,13 +255,21 @@
      ============================================================ */
 
   const themeToggleBtn = document.getElementById('theme-toggle');
-  const themeIcon      = document.getElementById('theme-icon');
+  const iconMoon       = document.getElementById('icon-moon');
+  const iconSun        = document.getElementById('icon-sun');
   const htmlEl         = document.documentElement;
 
   /** Apply the given theme ('light' or 'dark') to the page */
   const applyTheme = (theme) => {
     htmlEl.setAttribute('data-theme', theme);
-    themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    // Show moon in light mode (click → go dark), sun in dark mode (click → go light)
+    if (theme === 'dark') {
+      iconMoon.classList.add('hidden');
+      iconSun.classList.remove('hidden');
+    } else {
+      iconSun.classList.add('hidden');
+      iconMoon.classList.remove('hidden');
+    }
     themeToggleBtn.setAttribute(
       'aria-label',
       theme === 'dark' ? t('ariaLightMode') : t('ariaDarkMode')
@@ -318,7 +326,7 @@
     const now = new Date();
     currentTimeEl.textContent = formatTime(now);
     currentDateEl.textContent = formatDate(now);
-    greetingEl.textContent    = `${getGreeting(now.getHours())} 👋`;
+    greetingEl.textContent    = getGreeting(now.getHours());
   };
 
   // Tick immediately, then every second
@@ -499,19 +507,21 @@
       textSpan.className = `task-text${task.done ? ' done' : ''}`;
       textSpan.textContent = task.text; // safe: textContent
 
-      // --- Edit button (pencil icon) ---
+      // --- Edit button (pencil SVG) ---
       const editBtn = document.createElement('button');
       editBtn.className = 'task-btn edit';
-      editBtn.textContent = '✏️';
       editBtn.setAttribute('aria-label', t('taskAriaEdit')(task.text));
       editBtn.addEventListener('click', () => startEditTask(task.id, li, textSpan));
+      // Pencil / edit icon
+      editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
 
-      // --- Delete button ---
+      // --- Delete button (trash SVG) ---
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'task-btn delete';
-      deleteBtn.textContent = '🗑️';
       deleteBtn.setAttribute('aria-label', t('taskAriaDelete')(task.text));
       deleteBtn.addEventListener('click', () => deleteTask(task.id));
+      // Trash icon
+      deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
 
       li.appendChild(checkbox);
       li.appendChild(textSpan);
@@ -701,7 +711,8 @@
       // Delete button (top-right corner)
       const delBtn = document.createElement('button');
       delBtn.className = 'link-delete-btn';
-      delBtn.textContent = '✕';
+      // X / close icon
+      delBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
       delBtn.setAttribute('aria-label', t('linkAriaDelete')(link.name));
       delBtn.addEventListener('click', () => deleteLink(link.id));
 

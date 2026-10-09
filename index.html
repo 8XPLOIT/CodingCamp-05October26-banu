@@ -27,7 +27,22 @@
       <!-- Controls: theme toggle + language switch stacked -->
       <div class="header-controls">
         <button id="theme-toggle" class="btn-icon" aria-label="Toggle dark mode" title="Toggle light/dark mode">
-          <span id="theme-icon">🌙</span>
+          <!-- Moon icon (light mode) -->
+          <svg id="icon-moon" class="theme-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <!-- Sun icon (dark mode — hidden by default) -->
+          <svg id="icon-sun" class="theme-svg hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1"  x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22"  x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1"  y1="12" x2="3"  y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
         </button>
 
         <!-- Language switch -->
@@ -59,30 +74,30 @@
     <section class="card" id="todo-section" aria-labelledby="todo-heading">
       <h2 id="todo-heading" data-i18n="tasksTitle">Tasks</h2>
 
-      <!-- Add task row -->
-      <div class="input-row">
-        <input
-          type="text"
-          id="task-input"
-          class="text-input"
-          placeholder="Add a new task…"
-          data-i18n-placeholder="taskPlaceholder"
-          aria-label="New task text"
-          maxlength="200"
-        />
-        <button id="task-add" class="btn btn-primary" data-i18n="addBtn">Add</button>
+      <!-- Task controls: input+add (kiri) dan sort (kanan) -->
+      <div class="task-controls">
+        <div class="task-input-row">
+          <input
+            type="text"
+            id="task-input"
+            class="text-input"
+            placeholder="Add a new task…"
+            data-i18n-placeholder="taskPlaceholder"
+            aria-label="New task text"
+            maxlength="200"
+          />
+          <button id="task-add" class="btn btn-primary" data-i18n="addBtn">Add</button>
+        </div>
+        <div class="task-sort-row">
+          <label for="task-sort" class="sort-label" data-i18n="sortLabel">Sort:</label>
+          <select id="task-sort" class="select-input" aria-label="Sort tasks">
+            <option value="date-desc" data-i18n="sortNewest">Newest First</option>
+            <option value="name-asc"  data-i18n="sortName">Name (A–Z)</option>
+            <option value="status"    data-i18n="sortStatus">Status (Incomplete First)</option>
+          </select>
+        </div>
       </div>
       <p id="task-error" class="error-msg hidden" role="alert" aria-live="polite"></p>
-
-      <!-- Sort controls -->
-      <div class="sort-row">
-        <label for="task-sort" class="sort-label" data-i18n="sortLabel">Sort:</label>
-        <select id="task-sort" class="select-input" aria-label="Sort tasks">
-          <option value="date-desc" data-i18n="sortNewest">Newest First</option>
-          <option value="name-asc"  data-i18n="sortName">Name (A–Z)</option>
-          <option value="status"    data-i18n="sortStatus">Status (Incomplete First)</option>
-        </select>
-      </div>
 
       <!-- Task list -->
       <ul id="task-list" class="task-list" aria-label="Task list"></ul>
