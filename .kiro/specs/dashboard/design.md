@@ -1,4 +1,4 @@
-# Technical Design — To-Do Life Dashboard
+# Technical Design — To-Do List Life Dashboard
 
 ## Architecture
 
