@@ -65,7 +65,7 @@ A personal productivity dashboard that runs entirely in the browser — no serve
   - Error messages and ARIA labels
   - Greeting phrase and date locale (en-US ↔ id-ID)
 - Selected language saved to **LocalStorage** — remembered across sessions
-Please note: We are providing this option purely as an optional feature to accommodate language preferences, and it may revert to being English-only (without a language toggle).
+- Please note: We are providing this option purely as an optional feature to accommodate language preferences, and it may revert to being English-only (without a language toggle).
 
 ### 🎨 Icons
 - All UI icons are **inline SVG** — monochrome, scalable, zero external requests
